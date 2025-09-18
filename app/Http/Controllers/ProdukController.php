@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ProdukModel;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 
 class ProdukController extends Controller
 {
@@ -46,6 +47,57 @@ class ProdukController extends Controller
     {
         $produk = ProdukModel::findOrFail($id);
         return view('produk.show', compact('produk'));
+    }
+
+    public function edit($id)
+    {
+        $produk = ProdukModel::findOrFail($id);
+        return view('produk.edit', compact('produk'));
+    }
+
+    public function update(Request $request, $id): RedirectResponse
+    {
+        $request->validate([
+            'nama_produk' => 'required|string|max:255',
+            'deskripsi_produk' => 'required|string',
+            'harga_produk' => 'required|numeric',
+            'stock_produk' => 'required|integer',
+            'foto_produk' => 'sometimes|image|max:2048|mimes:jpeg,png,jpg,gif,svg',
+        ]);
+
+        $produk = ProdukModel::findOrFail($id);
+
+        if ($request->hasFile('foto_produk')) {
+            // Hapus foto lama jika ada
+            if ($produk->foto_produk && Storage::exists('produk/' . $produk->foto_produk)) {
+                Storage::delete('produk/' . $produk->foto_produk);
+            }
+
+            $image = $request->file('foto_produk');
+            $image->storeAs('produk', $image->hashName());
+            $produk->foto_produk = $image->hashName();
+        }
+
+        $produk->nama_produk = $request->nama_produk;
+        $produk->deskripsi_produk = $request->deskripsi_produk;
+        $produk->harga_produk = $request->harga_produk;
+        $produk->stock_produk = $request->stock_produk;
+        $produk->save();
+
+        return redirect()->route('produk.index')->with('success', 'Produk berhasil diperbarui.');
+    }
+
+    public function destroy($id): RedirectResponse
+    {
+        $produk = ProdukModel::findOrFail($id);
+
+        // Hapus foto produk jika ada
+        if ($produk->foto_produk && Storage::exists('produk/' . $produk->foto_produk)) {
+            Storage::delete('produk/' . $produk->foto_produk);
+        }
+
+        $produk->delete();
+        return redirect()->route('produk.index')->with('success', 'Produk berhasil dihapus.');
     }
 
 }
