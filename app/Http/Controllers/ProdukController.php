@@ -12,7 +12,7 @@ class ProdukController extends Controller
     public function index()
     {
         $produk = ProdukModel::latest()->paginate(10);
-        return view('produk.index', compact('produk'));
+        return view('Admin_page.produk.index', compact('produk'));
     }
 
     public function create()
@@ -99,5 +99,12 @@ class ProdukController extends Controller
         $produk->delete();
         return redirect()->route('produk.index')->with('success', 'Produk berhasil dihapus.');
     }
+
+    public function katalog()
+    {
+        $produk = ProdukModel::all();
+        return view('welcome', compact('produk'));
+    }
+
 
 }
