@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\ProdukModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ProdukExport;
 
 class ProdukController extends Controller
 {
@@ -104,6 +106,11 @@ class ProdukController extends Controller
     {
         $produk = ProdukModel::all();
         return view('welcome', compact('produk'));
+    }
+
+    public function export()
+    {
+        return Excel::download(new ProdukExport, 'produk.xlsx');
     }
 
 

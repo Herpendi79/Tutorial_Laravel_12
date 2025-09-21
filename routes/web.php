@@ -11,12 +11,15 @@ Route::get('/edit-produk/{id}', [ProdukController::class, 'edit'])->name('produk
 Route::put('/update-produk/{id}', [ProdukController::class, 'update'])->name('produk.update');
 Route::delete('/hapus-produk/{id}', [ProdukController::class, 'destroy'])->name('produk.destroy');
 Route::get('/detil-produk/{id}', [ProdukController::class, 'show'])->name('produk.show');
+Route::get('admin/export-produk', [ProdukController::class, 'export'])->name('produk.export');
 
 Route::get('/', [ProdukController::class, 'katalog'])->name('katalog');
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/cek_login', [AuthController::class, 'cek_login'])->name('cek_login');
-Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::get('/register-form', [AuthController::class, 'registerForm'])->name('registerForm');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+
 
 Route::get('/admin/dashboard', function () {
     return view('Admin_page.Main.dashboard');

@@ -13,11 +13,6 @@ class AuthController extends Controller
         return view('Auth.login');
     }
 
-    public function register()
-    {
-        return view('Auth.register');
-    }
-
     public function cek_login(Request $request)
     {
         $credentials = $request->validate([
@@ -54,4 +49,29 @@ class AuthController extends Controller
 
         return redirect()->route('login');
     }
+
+    public function registerForm()
+    {
+        return view('Auth.register');
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        // Buat user baru dengan role 'user'
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role' => 'user', // Set role default sebagai 'user'
+        ]);
+
+        return redirect()->route('login')->with('success', 'Registrasi berhasil. Silakan login.');
+    }
+
 }

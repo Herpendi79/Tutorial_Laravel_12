@@ -17,6 +17,7 @@
         <div class="container-fluid p-4">
             <h1 class="mb-4">Daftar Produk</h1>
             <a href="{{ route('produk.create') }}" class="btn btn-primary mb-3">Tambah Produk</a>
+            <a href="{{ route('produk.export') }}" class="btn btn-success mb-3">Export to Excel</a>
             <table class="table table-bordered">
                 <thead>
                     <tr>
